@@ -74,6 +74,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                         poise::Event::InteractionCreate { interaction } => {
                             events::interaction_create(ctx.clone(), interaction.clone(), &data.db).await;
                         }
+                        poise::Event::GuildCreate { guild, is_new } => {
+                            events::guild_create(&ctx, &guild, &data.db, *is_new).await;
+                        }
+                        poise::Event::GuildDelete { incomplete: guild, .. } => {
+                            events::guild_delete(&ctx, guild.id, &data.db).await;
+                        }
                         _ => {}
                     }
                     Ok(())
