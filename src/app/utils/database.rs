@@ -112,28 +112,6 @@ impl Database {
         Ok(count)
     }
 
-    pub async fn get_reviews(
-        &self,
-        target_id: i64,
-        review_type: &ReviewType,
-    ) -> Result<Vec<Review>, sqlx::Error> {
-        sqlx::query_as!(
-            Review,
-            r#"
-            SELECT id, target_id, reviewer_id, rating, comment, 
-                review_type as "review_type: ReviewType",
-                created_at
-            FROM reviews 
-            WHERE target_id = $1 AND review_type = $2
-            ORDER BY created_at DESC
-            "#,
-            target_id,
-            review_type as &ReviewType
-        )
-        .fetch_all(&self.pool)
-        .await
-    }
-
     pub async fn has_reviewed(
         &self,
         target_id: i64,
